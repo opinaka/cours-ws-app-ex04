@@ -1,0 +1,39 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Real-Time Charts with CanvasJS</title>
+    <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+  </head>
+  <body>
+    <div id="chartContainer" style="height: 300px; width: 100%"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+
+      // Initialize CanvasJS chart
+      const chart = new CanvasJS.Chart('chartContainer', {
+        theme: 'light2',
+        title: {
+          text: 'Real-Time Data Visualization with Websockets',
+        },
+        data: [
+          {
+            type: 'spline',
+            dataPoints: [],
+          },
+        ],
+      });
+
+      // Listen for incoming data
+      socket.on('data', (data) => {
+        data = JSON.parse(data);
+        chart.options.data[0].dataPoints.push({ y: data.value });
+        chart.render();
+      });
+    </script>
+  </body>
+</html>
